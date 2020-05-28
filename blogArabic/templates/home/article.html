@@ -1,0 +1,259 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block title %}{{art.title}}{% endblock %}
+{% block content %}
+
+
+
+
+
+{% if messages %}
+    <div class="alert alert-success text-center " style="margin-top: 0.5em;">
+        {% for message in messages %}
+
+      
+        <!-- when password not change -->
+        {%if "commentuser" in message.tags %}
+          <p> {{message}} {{full_name}} </p>   
+        {%endif%} 
+        <!-- end say hello --> 
+            <!-- msg article published -->
+        {%if "Done" in message.tags %}
+          <p> {{message}}  </p>   
+        {%endif%} 
+        <!-- end msg article published--> 
+
+        {% endfor %}
+    </div>
+    {% endif %} 
+
+ 
+ 
+ <!-- ##### Post Details Title Area Start ##### -->
+    <div class="post-details-title-area bg-overlay clearfix" style="background-image: url({{art.image.url}})">
+        <div class="container-fluid h-100">
+            <div class="row h-100 align-items-center">
+                <div class="col-12 col-lg-8">
+                    <!-- Post Content -->
+                    <div class="post-content">
+                        <p  style="background-color: {{art.category.color}};margin-bottom: 8px !important;" class="tag"><span>{{art.category}}</span></p>
+                         
+                       <p class="post-title">{{art.title}}</p>
+                       <!-- avatar pic -->
+                          <div class="comment-author">
+                                <img src="{{ art.avatar.profile_picture.url }}" alt="author" style="max-width: 3.5em; margin-right: 10px;height: 3.5em;border-radius: 80%;">
+
+                           
+                         
+                          </div>
+                          <a href="" class="post-author m-2 text-white">{{art.article_author}}</a>
+                            <span class="post-date">{{art.posted_on}}</span>
+           
+
+                        
+                           
+                           
+                            
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### Post Details Title Area End ##### -->
+  
+     <!-- ##### Post Details Area Start ##### -->
+    <section class="post-news-area section-padding-100-0 mb-70">
+        <div class="container">
+            <div class="row ">
+                <!-- Post Details Content Area -->
+                <div class="col-lg-8">
+                    <div class="post-details-content mb-100">
+                        <p>{{art.body|safe}}</p>
+                    </div>
+
+                        <!-- like dislike-->
+
+  
+                   <div >
+                   <button type="button" class="btn btn-light">
+                       الإعجابات <span class="badge badge-light">{{ total_likes }}</span>
+                  </button>
+
+  
+ 
+     
+   
+            {% if request.user.is_authenticated %}
+                  <form action="{% url 'blogArabic:like_post' %}" method="post">
+                  {% csrf_token %}
+                  {% if is_liked %}
+                      <button type="submit" id="like" name="post_id" value="{{ post.id  }} " class="btn btn-danger"><i class="far fa-thumbs-down"></i></button>
+                  {% else %}
+                      <button type="submit" id="like" name="post_id" value="{{ post.id }}" class="btn btn-primary "><i class="far fa-thumbs-up " ></i></button>
+                  {% endif %}
+ 
+                  </form>
+           
+
+
+            {% endif %}
+
+                  </div>
+
+
+                   <!-- end like dislike button -->
+
+                    <!-- Comment Area Start -->
+                    <div class="comment_area clearfix mb-100" style="margin-top: 5em;">
+                        <h4 class="mb-50">التعليقات</h4>
+
+                        <ol>
+                            {% for cf in add %} 
+                            <!-- Single Comment Area -->
+                            <li class="single_comment_area">
+                                <!-- Comment Content -->
+                                <div class="comment-content d-flex">
+                                    <!-- Comment Author -->
+                                    <div class="comment-author">
+                                        <img src="{{cf.avatar_commenter.profile_picture.url}}" alt="author">
+                                    </div>
+                                    <!-- Comment Meta -->
+                                    <div class="comment-meta">
+                                        <div class="d-flex">
+                                            <a href="#" class="post-author">{{cf.user_comment}}</a>
+                                            <a href="#" class="post-date">{{cf.date}} </a>
+                                            <a href="#" class="reply">Reply</a>
+                                        </div>
+                                        <p>{{cf.comment}}</p>
+                                    </div>
+                                </div>
+                                
+                            </li>
+                            {% endfor  %}
+
+                          
+                        </ol>
+
+                    </div>
+
+                   
+                </div>
+
+                <!-- Sidebar Widget -->
+                <div class="col-lg-4 " >
+                    <div class="sidebar-area">
+
+                        <!-- Newsletter Widget -->
+                        <div class="single-widget-area newsletter-widget mb-30">
+                            <h4>متابعة كل جديد موقع المدونات العربية</h4>
+                             <form action="#" method="post">
+                                <input type="email" name="nl-email" id="nlemail" placeholder="Your E-mail">
+                                <button type="submit" class="btn newsbox-btn w-100">متابعة</button>
+                            </form>
+                            <p class="mt-30">Nullam lacinia ex eleifend orci porttitor, suscipit interdum augue condimentum. Etiam pretium turpis eget nibh . volutpat lobortis.</p>
+                        </div>
+
+                        <!-- Add Widget -->
+                        <div class="single-widget-area add-widget mb-30">
+                            <a href="#">
+                                <img src="img/bg-img/add3.png" alt="">
+                            </a>
+                        </div>
+
+                        <!-- Latest News Widget -->
+                        <div class="single-widget-area news-widget mb-30">
+                            <h4>Latest News</h4>
+                            {% for td in three %}
+                            <!-- Single News Area -->
+                            <div class="single-blog-post d-flex style-4 mb-30">
+                                <!-- Blog Thumbnail -->
+                                <div class="blog-thumbnail">
+                                    <a href="#"><img src="{{td.image.url}}" alt=""></a>
+                                   
+                                </div>
+
+                                <!-- Blog Content -->
+                                <div class="blog-content">
+                                    
+                                    <a href="/article/{{td.id}}/{{td.slug}}/" class="post-title m-2">{{td.title}}</a>
+                                    <span class="post-date m-2">{{td.posted_on}}</span>
+
+                                </div>
+                            </div>
+                            {% endfor %}
+
+
+                        <!-- Single Widget Area -->
+                        <div class="single-widget-area">
+                            {% for gtd in th %}
+                            <!-- Single News Area -->
+                            <div class="single-blog-post style-2 mb-5">
+                                <!-- Blog Thumbnail -->
+                                <div class="blog-thumbnail">
+                                    <a href="#"><img src="{{gtd.image.url}}" alt=""></a>
+                                    <span class="post-date">المشاهدات {{gtd.read}}</span>|
+                                    <span class="post-date">الاعجابات {{gtd.total_likes}}</span>
+                                </div>
+
+                                <!-- Blog Content -->
+                                <div class="blog-content">
+                                    <span class="post-date">{{gtd.posted_on}}</span>
+                                    <a href="/article/{{gtd.id}}/{{gtd.slug}}" class="post-title">{{gtd.title}}</a>
+                                    <a href="#" class="post-author">{{gtd.article_author}}</a>
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                           
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ##### Post Details Area End ##### --> 
+
+    <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-5">
+{% if request.user.is_authenticated %}
+     <div class="post-a-comment-area mb-30 clearfix">
+                        <h4 class="mb-50">إضافة تعليق</h4>
+                        
+                        <!-- Reply Form -->
+                        <div class="contact-form-area">
+                            <form class="add_cm" action="/add_comment/{{art.id}}/" method="post">    {% csrf_token %}
+                                <div class="row">
+                                   
+                                 
+                                    
+                                    <div class="col-12">
+                                        <textarea name="comment" class="form-control" id="message" cols="30" rows="10" placeholder="التعليق"></textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <button class="btn newsbox-btn mt-30" type="submit">تعليق</button>
+                                    </div>
+                                
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+                   
+
+  </div>
+  
+  <div class="col-lg-5"></div>
+
+</div>
+
+
+
+
+
+
+
+{% endblock %}
